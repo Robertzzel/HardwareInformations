@@ -2,26 +2,45 @@
 
 namespace Machine
 {
-    public interface INetworkAdapter
+    public class NetworkAdapter
     {
-        public string Type { get; }
-        public string Caption { get; }
-        public string Name { get; }
-        public string MACAddress { get; }
-        public string Manufacturer { get; }
+        public string Type { get; set; } = String.Empty;
+        public string Caption { get; set; } = String.Empty;
+        public string Name { get; set; } = String.Empty;
+        public string MACAddress { get; set; } = String.Empty; 
+        public string Manufacturer { get; set; } = String.Empty;
     }
 
-    public class NetworkAdapter : INetworkAdapter
+    public interface INetworkAdapterMonitor
+    {
+        public IEnumerable<NetworkAdapter> GetNetworkAdapters();
+    }
+
+    public class NetworkAdapterMonitor : INetworkAdapterMonitor
     {
         private HardwareInfo _hardwareInfo = new HardwareInfo();
-        public string Type => _hardwareInfo.NetworkAdapterList[0].AdapterType;
 
-        public string Caption => _hardwareInfo.NetworkAdapterList[0].Caption;
+        public IEnumerable<NetworkAdapter> GetNetworkAdapters()
+        {
+            List<NetworkAdapter> networkAdapters = new List<NetworkAdapter>();
+            _hardwareInfo.RefreshAll();
 
-        public string Name => _hardwareInfo.NetworkAdapterList[0].Name;
+            foreach (var networkAdapter in _hardwareInfo.NetworkAdapterList)
+            {
+                networkAdapters.Add
+                (
+                    new NetworkAdapter
+                    {
+                        Type = networkAdapter.AdapterType,
+                        Name = networkAdapter.Name,
+                        MACAddress = networkAdapter.MACAddress,
+                        Manufacturer = networkAdapter.Manufacturer,
+                        Caption = networkAdapter.Caption,
+                    }
+                );
+            }
 
-        public string MACAddress => _hardwareInfo.NetworkAdapterList[0].MACAddress;
-
-        public string Manufacturer => _hardwareInfo.NetworkAdapterList[0].Manufacturer;
+            return networkAdapters;
+        }
     }
 }

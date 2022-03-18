@@ -2,19 +2,43 @@
 
 namespace Machine
 {
-    public interface IBattery
+    public class Battery
     {
-        public string Status { get; }
-        public int EstimatedChargeRemaining { get; }
-        public uint EstimatedRunTime { get; }
+        public string Status { get; set; } = String.Empty;
+        public int EstimatedChargeRemaining { get; set; } = default(int);
+        public uint EstimatedRunTime { get; set; } = default(uint);
     }
 
-    public class Battery : IBattery
+    public interface IBatteryMonitor
     {
-        private Hardware.Info.Battery _battery = new HardwareInfo().BatteryList[0];
-        public string Status => _battery.BatteryStatus.ToString();
-        public int EstimatedChargeRemaining => _battery.EstimatedChargeRemaining;
-        public uint EstimatedRunTime => _battery.EstimatedRunTime;
+        public IEnumerable<Battery> GetBatterys();
+    }
+
+    public class BatteryMonitor : IBatteryMonitor
+    {
+        private HardwareInfo _hardwareInfo = new HardwareInfo();
+
+        public IEnumerable<Battery> GetBatterys()
+        {
+            List<Battery> batterys = new List<Battery>();
+            _hardwareInfo.RefreshAll();
+
+            foreach (var battery in _hardwareInfo.BatteryList)
+            {
+                batterys.Add
+                (
+                    new Battery
+                    {
+                        Status = battery.BatteryStatusDescription,
+                        EstimatedChargeRemaining = battery.EstimatedChargeRemaining,
+                        EstimatedRunTime = battery.EstimatedRunTime,
+
+                    }
+                );
+            }
+
+            return batterys;
+        }
     }
 }
 

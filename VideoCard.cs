@@ -3,51 +3,62 @@ using HardwareInformation;
 
 namespace Machine
 {
-    public interface IGPU
+    public class GPU
     {
-        public string Caption { get; }
-        public uint BitsPerPixel { get; }
-        public uint HorizontalResolution { get; }
-        public uint VerticalResolution { get; }
-        public uint RefreshRate { get; }
-        public string Description { get; }
-        public string DriverVersion { get; }
-        public string Manufacturer { get; }
-        public uint MaxRefreshRate { get; }
-        public uint MinRefreshRate { get; }
-        public string Name { get; }
-        public string VideoProcessor { get; }
-        public ulong VRAM { get; }
+        public string Caption { get; set; } = String.Empty;
+        public uint BitsPerPixel { get; set; } = default(uint);
+        public uint HorizontalResolution { get; set; } = default(uint);
+        public uint VerticalResolution { get; set; } = default(uint);
+        public uint RefreshRate { get; set; } = default(uint);
+        public string Description { get; set; } = String.Empty;
+        public string DriverVersion { get; set; } = String.Empty;
+        public string Manufacturer { get; set; } = String.Empty;
+        public uint MaxRefreshRate { get; set; } = default(uint);
+        public uint MinRefreshRate { get; set; } = default(uint);
+        public string Name { get; set; } = String.Empty; 
+        public string VideoProcessor { get; set; } = String.Empty; 
+        public ulong VRAM { get; set; } = default(ulong);
     }
 
-    public class GPU : IGPU
+    public interface IGPUMonitor
+    {
+        public IEnumerable<GPU> GetGPUs();
+    }
+
+    public class GPUMonitor: IGPUMonitor
     {
         private HardwareInfo _hardwareInfo = new HardwareInfo();
         private MachineInformation _machineInformation = MachineInformationGatherer.GatherInformation();
-        public string Caption => _hardwareInfo.VideoControllerList[0].Caption;
 
-        public uint BitsPerPixel => _hardwareInfo.VideoControllerList[0].CurrentBitsPerPixel;
+        public IEnumerable<GPU> GetGPUs()
+        {
+            List<GPU> gpus = new List<GPU>();
+            _hardwareInfo.RefreshAll();
 
-        public uint HorizontalResolution => _hardwareInfo.VideoControllerList[0].CurrentHorizontalResolution;
+            for (int i = 0; i < _hardwareInfo.VideoControllerList.Count(); i++)
+            {
+                gpus.Add
+                (
+                    new GPU
+                    {
+                        Caption = _hardwareInfo.VideoControllerList[i].Caption,
+                        BitsPerPixel = _hardwareInfo.VideoControllerList[i].CurrentBitsPerPixel,
+                        HorizontalResolution = _hardwareInfo.VideoControllerList[i].CurrentHorizontalResolution,
+                        VerticalResolution = _hardwareInfo.VideoControllerList[i].CurrentVerticalResolution,
+                        RefreshRate = _hardwareInfo.VideoControllerList[i].CurrentRefreshRate,
+                        Description = _hardwareInfo.VideoControllerList[i].Description,
+                        DriverVersion = _hardwareInfo.VideoControllerList[i].DriverVersion,
+                        Manufacturer = _hardwareInfo.VideoControllerList[i].Manufacturer,
+                        MaxRefreshRate = _hardwareInfo.VideoControllerList[i].MaxRefreshRate,
+                        MinRefreshRate = _hardwareInfo.VideoControllerList[i].MinRefreshRate,
+                        Name = _hardwareInfo.VideoControllerList[i].Name,
+                        VideoProcessor = _hardwareInfo.VideoControllerList[i].VideoProcessor,
+                        VRAM = _machineInformation.Gpus[i].AvailableVideoMemory
+                    }
+                );
+            }
 
-        public uint VerticalResolution => _hardwareInfo.VideoControllerList[0].CurrentVerticalResolution;
-
-        public uint RefreshRate => _hardwareInfo.VideoControllerList[0].CurrentRefreshRate;
-
-        public string Description => _hardwareInfo.VideoControllerList[0].Description;
-
-        public string DriverVersion => _hardwareInfo.VideoControllerList[0].DriverVersion;
-
-        public string Manufacturer => _hardwareInfo.VideoControllerList[0].Manufacturer;
-
-        public uint MaxRefreshRate => _hardwareInfo.VideoControllerList[0].MaxRefreshRate;
-
-        public uint MinRefreshRate => _hardwareInfo.VideoControllerList[0].MinRefreshRate;
-
-        public string Name => _hardwareInfo.VideoControllerList[0].Name;
-
-        public string VideoProcessor => _hardwareInfo.VideoControllerList[0].VideoProcessor;
-
-        public ulong VRAM => _machineInformation.Gpus[0].AvailableVideoMemory;
+            return gpus;
+        }
     }
 }
