@@ -2,41 +2,30 @@
 
 namespace Machine
 {
-    public class Motherboard
-    {
-        public string Manufacturer { get; set; } = String.Empty;
-        public string Name { get; set; } = String.Empty;
-        public string SerialNumber { get; set; } = String.Empty;
-    }
-
     public interface IMotherboardMonitor
     {
-        public IEnumerable<Motherboard> GetMotherboards();
+        public string GetManufacturer();
+        public string GetName();
+        public string GetSerialNumber();
     }
 
     public class MotherboardMonitor : IMotherboardMonitor
     {
-        private HardwareInfo _hardwareInfo = new HardwareInfo();
+        private static HardwareInfo _hardwareInfo = new HardwareInfo();
 
-        public IEnumerable<Motherboard> GetMotherboards()
+        public string GetManufacturer()
         {
-            List<Motherboard> motherboards = new List<Motherboard>();
-            _hardwareInfo.RefreshAll();
+            return _hardwareInfo.MotherboardList[0].Manufacturer;
+        }
 
-            foreach(var motherboard in _hardwareInfo.MotherboardList)
-            {
-                motherboards.Add
-                (
-                    new Motherboard
-                    {
-                        Manufacturer = motherboard.Manufacturer,
-                        Name = motherboard.Product,
-                        SerialNumber = motherboard.SerialNumber,
-                    }
-                );
-            }
+        public string GetName()
+        {
+            return _hardwareInfo.MotherboardList[0].Product;
+        }
 
-            return motherboards;
+        public string GetSerialNumber()
+        {
+            return _hardwareInfo.MotherboardList[0].SerialNumber;
         }
     }
 }

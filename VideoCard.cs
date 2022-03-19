@@ -3,26 +3,21 @@ using HardwareInformation;
 
 namespace Machine
 {
-    public class GPU
-    {
-        public string Caption { get; set; } = String.Empty;
-        public uint BitsPerPixel { get; set; } = default(uint);
-        public uint HorizontalResolution { get; set; } = default(uint);
-        public uint VerticalResolution { get; set; } = default(uint);
-        public uint RefreshRate { get; set; } = default(uint);
-        public string Description { get; set; } = String.Empty;
-        public string DriverVersion { get; set; } = String.Empty;
-        public string Manufacturer { get; set; } = String.Empty;
-        public uint MaxRefreshRate { get; set; } = default(uint);
-        public uint MinRefreshRate { get; set; } = default(uint);
-        public string Name { get; set; } = String.Empty; 
-        public string VideoProcessor { get; set; } = String.Empty; 
-        public ulong VRAM { get; set; } = default(ulong);
-    }
-
     public interface IGPUMonitor
     {
-        public IEnumerable<GPU> GetGPUs();
+        public IEnumerable<string> GetCaption();
+        public IEnumerable<uint> GetBitsPerPixel();
+        public IEnumerable<uint> GetHorizontalResolution();
+        public IEnumerable<uint> GetVerticalResolution();
+        public IEnumerable<uint> GetRefreshRate();
+        public IEnumerable<string> GetDescription();
+        public IEnumerable<string> GetDriverVersion();
+        public IEnumerable<string> GetManufacturer();
+        public IEnumerable<uint> GetMaxRefreshRate();
+        public IEnumerable<uint> GetMinRefreshRate();
+        public IEnumerable<string> GetName();
+        public IEnumerable<string> GetVideoProcessor();
+        public IEnumerable<ulong> GetVRAM();
     }
 
     public class GPUMonitor: IGPUMonitor
@@ -30,35 +25,74 @@ namespace Machine
         private HardwareInfo _hardwareInfo = new HardwareInfo();
         private MachineInformation _machineInformation = MachineInformationGatherer.GatherInformation();
 
-        public IEnumerable<GPU> GetGPUs()
+        public GPUMonitor()
         {
-            List<GPU> gpus = new List<GPU>();
-            _hardwareInfo.RefreshAll();
+            _hardwareInfo.RefreshNetworkAdapterList();
+        }
 
-            for (int i = 0; i < _hardwareInfo.VideoControllerList.Count(); i++)
-            {
-                gpus.Add
-                (
-                    new GPU
-                    {
-                        Caption = _hardwareInfo.VideoControllerList[i].Caption,
-                        BitsPerPixel = _hardwareInfo.VideoControllerList[i].CurrentBitsPerPixel,
-                        HorizontalResolution = _hardwareInfo.VideoControllerList[i].CurrentHorizontalResolution,
-                        VerticalResolution = _hardwareInfo.VideoControllerList[i].CurrentVerticalResolution,
-                        RefreshRate = _hardwareInfo.VideoControllerList[i].CurrentRefreshRate,
-                        Description = _hardwareInfo.VideoControllerList[i].Description,
-                        DriverVersion = _hardwareInfo.VideoControllerList[i].DriverVersion,
-                        Manufacturer = _hardwareInfo.VideoControllerList[i].Manufacturer,
-                        MaxRefreshRate = _hardwareInfo.VideoControllerList[i].MaxRefreshRate,
-                        MinRefreshRate = _hardwareInfo.VideoControllerList[i].MinRefreshRate,
-                        Name = _hardwareInfo.VideoControllerList[i].Name,
-                        VideoProcessor = _hardwareInfo.VideoControllerList[i].VideoProcessor,
-                        VRAM = _machineInformation.Gpus[i].AvailableVideoMemory
-                    }
-                );
-            }
+        public IEnumerable<uint> GetBitsPerPixel()
+        {
+            return _hardwareInfo.VideoControllerList.Select(vc => vc.CurrentBitsPerPixel);
+        }
 
-            return gpus;
+        public IEnumerable<string> GetCaption()
+        {
+            return _hardwareInfo.VideoControllerList.Select(vc => vc.Caption);
+        }
+
+        public IEnumerable<string> GetDescription()
+        {
+            return _hardwareInfo.VideoControllerList.Select(vc => vc.Description);
+        }
+
+        public IEnumerable<string> GetDriverVersion()
+        {
+            return _hardwareInfo.VideoControllerList.Select(vc => vc.DriverVersion);
+        }
+
+        public IEnumerable<uint> GetHorizontalResolution()
+        {
+            return _hardwareInfo.VideoControllerList.Select(vc => vc.CurrentHorizontalResolution);
+        }
+
+        public IEnumerable<string> GetManufacturer()
+        {
+            return _hardwareInfo.VideoControllerList.Select(vc => vc.Manufacturer);
+        }
+
+        public IEnumerable<uint> GetMaxRefreshRate()
+        {
+            return _hardwareInfo.VideoControllerList.Select(vc => vc.MaxRefreshRate);
+        }
+
+        public IEnumerable<uint> GetMinRefreshRate()
+        {
+            return _hardwareInfo.VideoControllerList.Select(vc => vc.MinRefreshRate);
+        }
+
+        public IEnumerable<string> GetName()
+        {
+            return _hardwareInfo.VideoControllerList.Select(vc => vc.Name);
+        }
+
+        public IEnumerable<uint> GetRefreshRate()
+        {
+            return _hardwareInfo.VideoControllerList.Select(vc => vc.CurrentRefreshRate);
+        }
+
+        public IEnumerable<uint> GetVerticalResolution()
+        {
+            return _hardwareInfo.VideoControllerList.Select(vc => vc.CurrentVerticalResolution);
+        }
+
+        public IEnumerable<string> GetVideoProcessor()
+        {
+            return _hardwareInfo.VideoControllerList.Select(vc => vc.VideoProcessor);
+        }
+
+        public IEnumerable<ulong> GetVRAM()
+        {
+            return _machineInformation.Gpus.Select(vc => vc.AvailableVideoMemory);
         }
     }
 }

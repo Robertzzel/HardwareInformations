@@ -3,43 +3,41 @@ using HardwareInformation;
 
 namespace Machine
 {
-    public class RAM
-    {
-        public uint Speed { get; set; } = default(uint);
-        public string Manufacturer { get; set; } = String.Empty;
-        public ulong Capacity { get; set; } = default(ulong);
-        public string PartNumber { get; set; } = String.Empty;
-    }
-
     public interface IRAMMonitor
     {
-        public IEnumerable<RAM> GetRAMSticks();
+        public IEnumerable<uint> GetSpeed();
+        public IEnumerable<string> GetManufacturer();
+        public IEnumerable<ulong> GetCapacity();
+        public IEnumerable<string> GetPartNumber();
     }
 
     public class RAMMonitor : IRAMMonitor
     {
-        private HardwareInfo _hardwareInfo = new HardwareInfo();
+        private static HardwareInfo _hardwareInfo = new HardwareInfo();
 
-        public IEnumerable<RAM> GetRAMSticks()
+        public RAMMonitor()
         {
-            List<RAM> ramSticks = new List<RAM>();
-            _hardwareInfo.RefreshAll();
+            _hardwareInfo.RefreshMemoryList();
+        }
 
-            foreach (var memory in _hardwareInfo.MemoryList)
-            {
-                ramSticks.Add
-                (
-                    new RAM
-                    {
-                        Speed = memory.Speed,
-                        Manufacturer = memory.Manufacturer,
-                        Capacity = memory.Capacity,
-                        PartNumber = memory.PartNumber,
-                    }
-                );
-            }
+        public IEnumerable<ulong> GetCapacity()
+        {
+            return _hardwareInfo.MemoryList.Select(ramStick => ramStick.Capacity);
+        }
 
-            return ramSticks;
+        public IEnumerable<string> GetManufacturer()
+        {
+            return _hardwareInfo.MemoryList.Select(ramStick => ramStick.Manufacturer);
+        }
+
+        public IEnumerable<string> GetPartNumber()
+        {
+            return _hardwareInfo.MemoryList.Select(ramStick => ramStick.PartNumber);
+        }
+
+        public IEnumerable<uint> GetSpeed()
+        {
+            return _hardwareInfo.MemoryList.Select(ramStick => ramStick.Speed);
         }
     }
 

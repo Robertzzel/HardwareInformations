@@ -3,60 +3,56 @@ using HardwareInformation;
 
 namespace Machine
 {
-    public class CPU
-    {
-        public string Manufacturer { get; set; } = String.Empty;
-        public string Name { get; set; } = String.Empty;
-        public string Arhitecture { get; set; } = String.Empty;
-        public uint Family { get; set; } = default(uint);
-        public uint NumberOfPhysicalCores { get; set; } = default(uint);
-        public uint NumberOfLogicalCores { get; set; } = default(uint);
-        public uint CurrentClockSpeed { get; set; } = default(uint);
-        public string Description { get; set; } = String.Empty;
-        public uint MaxClockSpeed { get; set; } = default(uint);
-        public string SocketDesignation { get; set; } = String.Empty;
-        public uint L2CacheSize { get; set; } = default(uint);
-        public uint L3CacheSize { get; set; } = default(uint);
-    }
-
     public interface ICPUMonitor
     {
-        public IEnumerable<CPU> GetCPUs();
+        public string GetManufacturer();
+        public string GetName();
+        public string GetArhitecture();
+        public uint GetFamily();
+        public uint GetNumberOfPhysicalCores();
+        public uint GetNumberOfLogicalCores();
+        public uint GetCurrentClockSpeed();
+        public string GetDescription();
+        public uint GetMaxClockSpeed();
+        public string GetSocketDesignation();
+        public uint GetL2CacheSize();
+        public uint GetL3CacheSize();
     }
 
     public class CPUMonitor : ICPUMonitor
     {
-        private MachineInformation _machineInfo = MachineInformationGatherer.GatherInformation();
-        private HardwareInfo _hardwareInfo = new HardwareInfo();
+        private static MachineInformation _machineInfo = MachineInformationGatherer.GatherInformation();
+        private static HardwareInfo _hardwareInfo = new HardwareInfo();
 
-        public IEnumerable<CPU> GetCPUs()
+        public string GetManufacturer() => _machineInfo.Cpu.Vendor;
+        public string GetName() => _machineInfo.Cpu.Name;
+        public string GetArhitecture() => _machineInfo.Cpu.Architecture;
+        public uint GetFamily() => _machineInfo.Cpu.Family;
+        public uint GetNumberOfPhysicalCores() => _machineInfo.Cpu.PhysicalCores;
+        public uint GetNumberOfLogicalCores() => _machineInfo.Cpu.LogicalCores;
+        public uint GetCurrentClockSpeed()
         {
-            List<CPU> cpus = new List<CPU>();
-            _hardwareInfo.RefreshAll();
-
-            for (int i = 0; i < _hardwareInfo.CpuList.Count(); i++)
-            {
-                cpus.Add
-                (
-                    new CPU
-                    {
-                        Manufacturer = _hardwareInfo.CpuList[i].Manufacturer,
-                        Name = _hardwareInfo.CpuList[i].Name,
-                        Arhitecture = _machineInfo.Cpu.Architecture,
-                        Family = _machineInfo.Cpu.Family,
-                        NumberOfPhysicalCores = _machineInfo.Cpu.PhysicalCores,
-                        NumberOfLogicalCores = _machineInfo.Cpu.LogicalCores,
-                        CurrentClockSpeed = _hardwareInfo.CpuList[i].CurrentClockSpeed,
-                        Description = _hardwareInfo.CpuList[i].Description,
-                        MaxClockSpeed = _hardwareInfo.CpuList[i].MaxClockSpeed,
-                        SocketDesignation = _hardwareInfo.CpuList[i].SocketDesignation,
-                        L2CacheSize = _hardwareInfo.CpuList[i].L2CacheSize,
-                        L3CacheSize = _hardwareInfo.CpuList[i].L3CacheSize
-                    }
-                );
-            }
-
-            return cpus;
+            _hardwareInfo.RefreshCPUList();
+            return _hardwareInfo.CpuList[0].CurrentClockSpeed;
         }
-    }
+        public string GetDescription() => _machineInfo.Cpu.Caption;
+        public uint GetMaxClockSpeed()
+        {
+            _hardwareInfo.RefreshCPUList();
+            return _hardwareInfo.CpuList[0].MaxClockSpeed;
+        }
+        
+        public string GetSocketDesignation() => _machineInfo.Cpu.Socket;
+        public uint GetL2CacheSize()
+        {
+            _hardwareInfo.RefreshCPUList();
+            return _hardwareInfo.CpuList[0].L2CacheSize;
+        }
+        public uint GetL3CacheSize()
+        {
+            _hardwareInfo.RefreshCPUList();
+            return _hardwareInfo.CpuList[0].L3CacheSize;
+        }
+
+}
 }

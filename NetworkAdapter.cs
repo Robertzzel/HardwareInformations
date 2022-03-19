@@ -2,45 +2,48 @@
 
 namespace Machine
 {
-    public class NetworkAdapter
-    {
-        public string Type { get; set; } = String.Empty;
-        public string Caption { get; set; } = String.Empty;
-        public string Name { get; set; } = String.Empty;
-        public string MACAddress { get; set; } = String.Empty; 
-        public string Manufacturer { get; set; } = String.Empty;
-    }
-
     public interface INetworkAdapterMonitor
     {
-        public IEnumerable<NetworkAdapter> GetNetworkAdapters();
+        public IEnumerable<string> GetType();
+        public IEnumerable<string> GetCaption();
+        public IEnumerable<string> GetName();
+        public IEnumerable<string> GetMACAddress();
+        public IEnumerable<string> GetManufacturer();
     }
+
 
     public class NetworkAdapterMonitor : INetworkAdapterMonitor
     {
         private HardwareInfo _hardwareInfo = new HardwareInfo();
 
-        public IEnumerable<NetworkAdapter> GetNetworkAdapters()
+        public NetworkAdapterMonitor()
         {
-            List<NetworkAdapter> networkAdapters = new List<NetworkAdapter>();
-            _hardwareInfo.RefreshAll();
+            _hardwareInfo.RefreshNetworkAdapterList();
+        }
 
-            foreach (var networkAdapter in _hardwareInfo.NetworkAdapterList)
-            {
-                networkAdapters.Add
-                (
-                    new NetworkAdapter
-                    {
-                        Type = networkAdapter.AdapterType,
-                        Name = networkAdapter.Name,
-                        MACAddress = networkAdapter.MACAddress,
-                        Manufacturer = networkAdapter.Manufacturer,
-                        Caption = networkAdapter.Caption,
-                    }
-                );
-            }
+        public IEnumerable<string> GetCaption()
+        {
+            return _hardwareInfo.NetworkAdapterList.Select(na => na.Caption);
+        }
 
-            return networkAdapters;
+        public IEnumerable<string> GetMACAddress()
+        {
+            return _hardwareInfo.NetworkAdapterList.Select(na => na.MACAddress);
+        }
+
+        public IEnumerable<string> GetManufacturer()
+        {
+            return _hardwareInfo.NetworkAdapterList.Select(na => na.Manufacturer);
+        }
+
+        public IEnumerable<string> GetName()
+        {
+            return _hardwareInfo.NetworkAdapterList.Select(na => na.Name);
+        }
+
+        public new IEnumerable<string> GetType()
+        {
+            return _hardwareInfo.NetworkAdapterList.Select(na => na.AdapterType);
         }
     }
 }
