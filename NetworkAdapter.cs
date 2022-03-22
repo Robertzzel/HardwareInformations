@@ -14,36 +14,29 @@ namespace Machine
 
     public class NetworkAdapterMonitor : INetworkAdapterMonitor
     {
-        private HardwareInfo _hardwareInfo = new HardwareInfo();
-
-        public NetworkAdapterMonitor()
-        {
-            _hardwareInfo.RefreshNetworkAdapterList();
-        }
-
         public IEnumerable<string> GetCaption()
         {
-            return _hardwareInfo.NetworkAdapterList.Select(na => na.Caption);
+            return HardwareInformations.HardwareInfo.NetworkAdapterList.Select(na => na.Caption);
         }
 
         public IEnumerable<string> GetMACAddress()
         {
-            return _hardwareInfo.NetworkAdapterList.Select(na => na.MACAddress);
+            return HardwareInformations.HardwareInfo.NetworkAdapterList.Select(na => na.MACAddress);
         }
 
         public IEnumerable<string> GetManufacturer()
         {
-            return _hardwareInfo.NetworkAdapterList.Select(na => na.Manufacturer);
+            return HardwareInformations.HardwareInfo.NetworkAdapterList.Select(na => na.Manufacturer);
         }
 
         public IEnumerable<string> GetName()
         {
-            return _hardwareInfo.NetworkAdapterList.Select(na => na.Name);
+            return HardwareInformations.HardwareInfo.NetworkAdapterList.Select(na => na.Name);
         }
 
         public new IEnumerable<string> GetType()
         {
-            return _hardwareInfo.NetworkAdapterList.Select(na => na.AdapterType);
+            return HardwareInformations.HardwareInfo.NetworkAdapterList.Select(na => na.AdapterType);
         }
     }
 }

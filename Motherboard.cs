@@ -11,21 +11,19 @@ namespace Machine
 
     public class MotherboardMonitor : IMotherboardMonitor
     {
-        private static HardwareInfo _hardwareInfo = new HardwareInfo();
-
         public string GetManufacturer()
         {
-            return _hardwareInfo.MotherboardList[0].Manufacturer;
+            return HardwareInformations.HardwareInfo.MotherboardList[0].Manufacturer;
         }
 
         public string GetName()
         {
-            return _hardwareInfo.MotherboardList[0].Product;
+            return HardwareInformations.HardwareInfo.MotherboardList[0].Product;
         }
 
         public string GetSerialNumber()
         {
-            return _hardwareInfo.MotherboardList[0].SerialNumber;
+            return HardwareInformations.HardwareInfo.MotherboardList[0].SerialNumber;
         }
     }
 }

@@ -1,7 +1,4 @@
-﻿using Hardware.Info;
-using HardwareInformation;
-
-namespace Machine
+﻿namespace Machine
 {
     public interface ICPUMonitor
     {
@@ -21,38 +18,18 @@ namespace Machine
 
     public class CPUMonitor : ICPUMonitor
     {
-        private static MachineInformation _machineInfo = MachineInformationGatherer.GatherInformation();
-        private static HardwareInfo _hardwareInfo = new HardwareInfo();
-
-        public string GetManufacturer() => _machineInfo.Cpu.Vendor;
-        public string GetName() => _machineInfo.Cpu.Name;
-        public string GetArhitecture() => _machineInfo.Cpu.Architecture;
-        public uint GetFamily() => _machineInfo.Cpu.Family;
-        public uint GetNumberOfPhysicalCores() => _machineInfo.Cpu.PhysicalCores;
-        public uint GetNumberOfLogicalCores() => _machineInfo.Cpu.LogicalCores;
-        public uint GetCurrentClockSpeed()
-        {
-            _hardwareInfo.RefreshCPUList();
-            return _hardwareInfo.CpuList[0].CurrentClockSpeed;
-        }
-        public string GetDescription() => _machineInfo.Cpu.Caption;
-        public uint GetMaxClockSpeed()
-        {
-            _hardwareInfo.RefreshCPUList();
-            return _hardwareInfo.CpuList[0].MaxClockSpeed;
-        }
-        
-        public string GetSocketDesignation() => _machineInfo.Cpu.Socket;
-        public uint GetL2CacheSize()
-        {
-            _hardwareInfo.RefreshCPUList();
-            return _hardwareInfo.CpuList[0].L2CacheSize;
-        }
-        public uint GetL3CacheSize()
-        {
-            _hardwareInfo.RefreshCPUList();
-            return _hardwareInfo.CpuList[0].L3CacheSize;
-        }
+        public string GetManufacturer() => HardwareInformations.MachineInfo.Cpu.Vendor;
+        public string GetName() => HardwareInformations.MachineInfo.Cpu.Name;
+        public string GetArhitecture() => HardwareInformations.MachineInfo.Cpu.Architecture;
+        public uint GetFamily() => HardwareInformations.MachineInfo.Cpu.Family;
+        public uint GetNumberOfPhysicalCores() => HardwareInformations.MachineInfo.Cpu.PhysicalCores;
+        public uint GetNumberOfLogicalCores() => HardwareInformations.MachineInfo.Cpu.LogicalCores;
+        public uint GetCurrentClockSpeed() => HardwareInformations.HardwareInfo.CpuList[0].CurrentClockSpeed;
+        public string GetDescription() => HardwareInformations.MachineInfo.Cpu.Caption;
+        public uint GetMaxClockSpeed() => HardwareInformations.HardwareInfo.CpuList[0].MaxClockSpeed;
+        public string GetSocketDesignation() => HardwareInformations.MachineInfo.Cpu.Socket;
+        public uint GetL2CacheSize() => HardwareInformations.HardwareInfo.CpuList[0].L2CacheSize;
+        public uint GetL3CacheSize() => HardwareInformations.HardwareInfo.CpuList[0].L3CacheSize;
 
 }
 }

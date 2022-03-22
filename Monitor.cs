@@ -2,11 +2,31 @@
 {
     public  class Monitor
     {
-        public ICPUMonitor cpuMonitor = new CPUMonitor();
-        private IGPUMonitor _gpuMonitor = new GPUMonitor();
-        private INetworkAdapterMonitor _networkAdapterMonitor = new NetworkAdapterMonitor();
-        private IMotherboardMonitor _motherboardMonitor = new MotherboardMonitor();
-        private IRAMMonitor _ramMonitor = new RAMMonitor();
-        private IBatteryMonitor _batteryMonitor = new BatteryMonitor();
+        public ICPUMonitor cpuMonitor;
+        public IGPUMonitor gpuMonitor;
+        public INetworkAdapterMonitor networkAdapterMonitor;
+        public IMotherboardMonitor motherboardMonitor;
+        public IRAMMonitor ramMonitor;
+        public IBatteryMonitor batteryMonitor;
+        private static Monitor instance = null;
+
+        private Monitor() 
+        {
+            cpuMonitor = new CPUMonitor();
+            gpuMonitor = new GPUMonitor();
+            networkAdapterMonitor = new NetworkAdapterMonitor();
+            motherboardMonitor = new MotherboardMonitor();
+            ramMonitor = new RAMMonitor();
+            batteryMonitor = new BatteryMonitor();
+        }
+
+        public static Monitor getMonitor()
+        {
+            if(instance == null)
+            {
+                instance = new Monitor();
+            }
+            return instance;
+        }
     }
 }

@@ -11,24 +11,19 @@ namespace Machine
 
     public class BatteryMonitor : IBatteryMonitor
     {
-        private HardwareInfo _hardwareInfo = new HardwareInfo();
-
         public int GetEstimatedChargeRemaining()
         {
-            _hardwareInfo.RefreshBatteryList();
-            return _hardwareInfo.BatteryList[0].EstimatedChargeRemaining;
+            return HardwareInformations.HardwareInfo.BatteryList[0].EstimatedChargeRemaining;
         }
 
         public uint GetEstimatedRunTime()
         {
-            _hardwareInfo.RefreshBatteryList();
-            return _hardwareInfo.BatteryList[0].EstimatedRunTime;
+            return HardwareInformations.HardwareInfo.BatteryList[0].EstimatedRunTime;
         }
 
         public string GetStatus()
         {
-            _hardwareInfo.RefreshBatteryList();
-            return _hardwareInfo.BatteryList[0].BatteryStatusDescription;
+            return HardwareInformations.HardwareInfo.BatteryList[0].BatteryStatusDescription;
         }
     }
 }
